@@ -1,8 +1,17 @@
 import path from 'path';
-import webpack from 'webpack';
-import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
+// import webpack from 'webpack';
 
-const config: webpack.Configuration = {
+import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
+//merge config
+import { Configuration as WebpackConfiguration } from 'webpack';
+import { Configuration as WebpackDevServerConfiguration } from 'webpack-dev-server';
+
+//this solved:
+//            Object literal may only specify known properties, and 'devServer' does not exist in type 'Configuration'
+interface Configuration extends WebpackConfiguration {
+  devServer?: WebpackDevServerConfiguration;
+}
+export const config: Configuration = {
   //The entry field tells Webpack where to start looking for modules to bundle. In our project, this is index.tsx.
   entry: './src/index.tsx',
   //The module field tells Webpack how different modules will be treated. Our project is telling Webpack to use the babel-loader plugin to process files with .js, .ts, and .tsx extensions.
@@ -35,6 +44,7 @@ const config: webpack.Configuration = {
     compress: true,
     port: 4000,
   },
+
   plugins: [
     new ForkTsCheckerWebpackPlugin({
       //async: We have set this to false so that Webpack waits for the type checking process to finish before it emits any code.
